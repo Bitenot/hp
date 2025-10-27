@@ -480,7 +480,7 @@
             
             <div class="media-player">
                 <audio controls id="audio-player">
-                    <source src="Forget.mp3" type="audio/mpeg">
+                    <source src="https://drive.google.com/file/d/1mBJg83e4-HbxiqWRW2EmYufLKalbdrE3/view?usp=drive_link" type="audio/mpeg">
                     Ваш браузер не поддерживает аудио элемент.
                 </audio>
             </div>
@@ -541,12 +541,12 @@
         
         // Список мемов (в реальном проекте будут загружаться из папки /photos)
         const memeImages = [
-            'photo1.jpg',
-            'photo2.jpg',
-            'photo3.jpg',
-            'photo4.jpg',
-            'photo5.jpg',
-            'photo6.jpg'
+            'https://drive.google.com/file/d/17Nykr5leSfNqZNAitHrJQ6kfifm3dxhm/view?usp=drive_link',
+            'https://drive.google.com/file/d/1uaqN2GvbbE25aZbhE0LUmpkQCn5-fiF8/view?usp=drive_link',
+            'https://drive.google.com/file/d/1lz_A0BtW3noU5Y12-LvKOM3jyGcodxDf/view?usp=drive_link',
+            'https://drive.google.com/file/d/1dHI5ym5z2_9NHJe1WvxzVR_Lhp2EE_aF/view?usp=drive_link',
+            'https://drive.google.com/file/d/1Kum9rtrFvJWByvL6GNKBJ3nac4lYthrH/view?usp=drive_link',
+            'https://drive.google.com/file/d/1Hl6u_mH0LGaDX8Vv2EoJnhZ-2P8mNR-I/view?usp=drive_link'
         ];
 
         // Инициализация игры
@@ -618,13 +618,11 @@
                 
                 const img = document.createElement('img');
                 // Исправленный путь к фото
-                img.src = `${meme}`;
+                img.src = meme;
                 img.alt = `Фото ${index + 1}`;
                 
                 // Обработчик ошибки загрузки изображения
-                img.onerror = function() {
-                    this.src = `https://via.placeholder.com/150/2a2a2a/d4af37?text=Фото+${index+1}`;
-                };
+
                 
                 memeItem.appendChild(img);
                 memeItem.addEventListener('click', () => toggleMemeSelection(memeItem));
@@ -672,7 +670,7 @@
 
         function openMemeModal(meme) {
             // Исправленный путь к фото
-            modalMemeImg.src = `${meme}`;
+            modalMemeImg.src = meme;
             memeModal.style.display = 'flex';
         }
 
@@ -714,7 +712,7 @@
         // Загрузка текстов песен
         function loadLyrics() {
             // Загружаем тексты песен из файлов
-            fetch('russian_lyrics.txt')
+            fetch('https://drive.google.com/file/d/1vO7sBNpas4oOFsLrhNAJFBGaT__D6fXE/view?usp=drive_link')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Файл не найден');
@@ -729,7 +727,7 @@
                     russianLyrics.innerHTML = '<p>Сорян, неполадочки вышли. Я лошара)</p>';
                 });
 
-            fetch('english_lyrics.txt')
+            fetch('https://drive.google.com/file/d/1ArUymCCZEZdoquIpjaUpKOazraaJgBRU/view?usp=drive_link')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Файл не найден');
