@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #d4af37;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Винтажные декоративные элементы */
+        .vintage-border {
+            border: 2px solid #d4af37;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            position: relative;
+            padding: 20px;
+            background-color: rgba(26, 26, 26, 0.9);
+        }
+
+        .vintage-border::before {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .ornament {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #d4af37;
+            opacity: 0.5;
+        }
+
+        .ornament-top-left {
+            top: -10px;
+            left: -10px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .ornament-top-right {
+            top: -10px;
+            right: -10px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .ornament-bottom-left {
+            bottom: -10px;
+            left: -10px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .ornament-bottom-right {
+            bottom: -10px;
+            right: -10px;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* Заголовки и текст */
+        h1, h2, h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Кнопки */
+        .btn {
+            background-color: transparent;
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 12px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn:hover {
+            background-color: #d4af37;
+            color: #1a1a1a;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            background-color: transparent;
+            color: #d4af37;
+            box-shadow: none;
+        }
+
+        /* Экран приветствия */
+        #welcome-screen {
+            text-align: center;
+        }
+
+        #welcome-screen h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        /* Игра с ячейками */
+        #cell-game {
+            display: none;
+        }
+
+        .cells-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            background-color: #2a2a2a;
+            border: 1px solid #d4af37;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        .cell:hover {
+            background-color: #3a3a3a;
+        }
+
+        .cell.opened {
+            background-color: #3a3a3a;
+            border-color: #8b7355;
+        }
+
+        .cell.key {
+            background-color: #d4af37;
+            color: #1a1a1a;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Игра с мемами */
+        #meme-game {
+            display: none;
+        }
+
+        .meme-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .meme-item {
+            position: relative;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .meme-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .meme-item.selected {
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .meme-item.selected::after {
+            content: "✓";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #4CAF50;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .meme-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Модальное окно для просмотра мемов */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Игра с угадыванием числа */
+        #number-game {
+            display: none;
+        }
+
+        .number-input {
+            background-color: #2a2a2a;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 10px;
+            font-size: 18px;
+            width: 100%;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* Финальный экран */
+        #final-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .media-player {
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .lyrics-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .lyrics-column {
+            background-color: rgba(42, 42, 42, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .lyrics-column h3 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Анимации переходов */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Адаптация для iPhone 13 */
+        @media (max-width: 414px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .cells-container {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 5px;
+            }
+            
+            .cell {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .meme-gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .lyrics-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Экран приветствия -->
+    <div class="container" id="welcome-screen">
+        <div class="vintage-border">
+            <div class="ornament ornament-top-left"></div>
+            <div class="ornament ornament-top-right"></div>
+            <div class="ornament ornament-bottom-left"></div>
+            <div class="ornament ornament-bottom-right"></div>
+            
+            <h1>Happy Birthday</h1>
+            <p>Хочу пожелать тебе... Нет, это как-то слишком банально - желать что-то. Лучше зделать, так ведь?</p>
+            <p>Готова отправится в небольшое путешествие?</p>
+            <button class="btn" id="start-btn">Начать Игру</button>
+        </div>
+    </div>
+
+    <!-- Игра с ячейками -->
+    <div class="container" id="cell-game">
+        <div class="vintage-border">
+            <div class="ornament ornament-top-left"></div>
+            <div class="ornament ornament-top-right"></div>
+            <div class="ornament ornament-bottom-left"></div>
+            <div class="ornament ornament-bottom-right"></div>
+            
+            <h2>Найди Ключ</h2>
+            <p>Открой ячейки, чтобы найти золотой ключик. Удачи!</p>
+            
+            <div class="cells-container" id="cells-container"></div>
+            
+            <p id="cell-message">Открыто: <span id="opened-count">0</span> из 30</p>
+        </div>
+    </div>
+
+    <!-- Игра с мемами -->
+    <div class="container" id="meme-game">
+        <div class="vintage-border">
+            <div class="ornament ornament-top-left"></div>
+            <div class="ornament ornament-top-right"></div>
+            <div class="ornament ornament-bottom-left"></div>
+            <div class="ornament ornament-bottom-right"></div>
+            
+            <h2>Галерея</h2>
+            <p>Выбери то что больше по душе!</p>
+            
+            <div class="meme-gallery" id="meme-gallery"></div>
+            
+            <button class="btn" id="continue-meme-btn" disabled>Продолжить</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для просмотра мемов -->
+    <div class="modal" id="meme-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modal-meme-img" src="" alt="Мем">
+        </div>
+    </div>
+
+    <!-- Игра с угадыванием числа -->
+    <div class="container" id="number-game">
+        <div class="vintage-border">
+            <div class="ornament ornament-top-left"></div>
+            <div class="ornament ornament-top-right"></div>
+            <div class="ornament ornament-bottom-left"></div>
+            <div class="ornament ornament-bottom-right"></div>
+            
+            <h2>Угадай Число</h2>
+            <p>Попробуй угадать число от 1 до 100. Сегодня я добрый, так что ошибки прощаются</p>
+            
+            <input type="number" class="number-input" id="number-input" min="1" max="100" placeholder="Гадать тут">
+            
+            <p id="number-message"></p>
+            
+            <button class="btn" id="guess-btn">Угадать</button>
+        </div>
+    </div>
+
+    <!-- Финальный экран -->
+    <div class="container" id="final-screen">
+        <div class="vintage-border">
+            <div class="ornament ornament-top-left"></div>
+            <div class="ornament ornament-top-right"></div>
+            <div class="ornament ornament-bottom-left"></div>
+            <div class="ornament ornament-bottom-right"></div>
+            
+            <h2>Поздравляю Вася!</h2>
+            <p>Ты успешно прошла все испытания! Послушай пожалуйста то что я успел зделать:</p>
+            
+            <div class="media-player">
+                <audio controls id="audio-player">
+                    <source src="Forget.mp3" type="audio/mpeg">
+                    Ваш браузер не поддерживает аудио элемент.
+                </audio>
+            </div>
+            
+            <div class="lyrics-container">
+                <div class="lyrics-column">
+                    <h3>Русский текст</h3>
+                    <div id="russian-lyrics">
+                        <!-- Текст песни на русском будет загружен здесь -->
+                    </div>
+                </div>
+                <div class="lyrics-column">
+                    <h3>English Lyrics</h3>
+                    <div id="english-lyrics">
+                        <!-- Текст песни на английском будет загружен здесь -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="credits">
+                <p><strong>Авторы:</strong> Daniel Woss, Veronika Kuchmarenko</p>
+                <p><strong>Год издания:</strong> 2025.10.28</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Элементы DOM
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const cellGame = document.getElementById('cell-game');
+        const memeGame = document.getElementById('meme-game');
+        const numberGame = document.getElementById('number-game');
+        const finalScreen = document.getElementById('final-screen');
+        
+        const startBtn = document.getElementById('start-btn');
+        const cellsContainer = document.getElementById('cells-container');
+        const openedCount = document.getElementById('opened-count');
+        const cellMessage = document.getElementById('cell-message');
+        
+        const memeGallery = document.getElementById('meme-gallery');
+        const continueMemeBtn = document.getElementById('continue-meme-btn');
+        const memeModal = document.getElementById('meme-modal');
+        const modalMemeImg = document.getElementById('modal-meme-img');
+        const closeModal = document.querySelector('.close-modal');
+        
+        const numberInput = document.getElementById('number-input');
+        const numberMessage = document.getElementById('number-message');
+        const guessBtn = document.getElementById('guess-btn');
+        
+        const audioPlayer = document.getElementById('audio-player');
+        const russianLyrics = document.getElementById('russian-lyrics');
+        const englishLyrics = document.getElementById('english-lyrics');
+
+        // Переменные состояния
+        let openedCells = 0;
+        let keyCellIndex = -1;
+        let selectedMemes = [];
+        
+        // Список мемов (в реальном проекте будут загружаться из папки /photos)
+        const memeImages = [
+            'photo1.jpg',
+            'photo2.jpg',
+            'photo3.jpg',
+            'photo4.jpg',
+            'photo5.jpg',
+            'photo6.jpg'
+        ];
+
+        // Инициализация игры
+        function initGame() {
+            // Начальный экран
+            startBtn.addEventListener('click', startCellGame);
+            
+            // Игра с ячейками
+            initCellGame();
+            
+            // Игра с мемами
+            initMemeGame();
+            
+            // Игра с числами
+            initNumberGame();
+        }
+
+        // Игра с ячейками
+        function initCellGame() {
+            // Создаем 30 ячеек
+            for (let i = 0; i < 30; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleCellClick);
+                cellsContainer.appendChild(cell);
+            }
+            
+            // Выбираем случайную ячейку для ключа
+            keyCellIndex = Math.floor(Math.random() * 30);
+        }
+
+        function handleCellClick(e) {
+            const cell = e.target;
+            const index = parseInt(cell.dataset.index);
+            
+            // Если ячейка уже открыта, ничего не делаем
+            if (cell.classList.contains('opened')) return;
+            
+            // Отмечаем ячейку как открытую
+            cell.classList.add('opened');
+            openedCells++;
+            openedCount.textContent = openedCells;
+            
+            // Проверяем, нашли ли ключ
+            if (index === keyCellIndex) {
+                cell.classList.add('key');
+                cell.innerHTML = '🔑';
+                cellMessage.textContent = 'Поздравляю! Мастер искать закладки!';
+                
+                // Анимация и переход к следующей игре
+                setTimeout(() => {
+                    cellGame.style.display = 'none';
+                    memeGame.style.display = 'flex';
+                    memeGame.classList.add('fade-in');
+                }, 1500);
+            } else {
+                cell.innerHTML = '❌';
+            }
+        }
+
+        // Игра с мемами
+        function initMemeGame() {
+            // Создаем галерею мемов
+            memeImages.forEach((meme, index) => {
+                const memeItem = document.createElement('div');
+                memeItem.className = 'meme-item';
+                memeItem.dataset.index = index;
+                
+                const img = document.createElement('img');
+                // Исправленный путь к фото
+                img.src = `${meme}`;
+                img.alt = `Фото ${index + 1}`;
+                
+                // Обработчик ошибки загрузки изображения
+                img.onerror = function() {
+                    this.src = `https://via.placeholder.com/150/2a2a2a/d4af37?text=Фото+${index+1}`;
+                };
+                
+                memeItem.appendChild(img);
+                memeItem.addEventListener('click', () => toggleMemeSelection(memeItem));
+                
+                // Двойной клик для открытия в полноэкранном режиме
+                memeItem.addEventListener('dblclick', () => openMemeModal(meme));
+                
+                memeGallery.appendChild(memeItem);
+            });
+            
+            // Кнопка продолжения
+            continueMemeBtn.addEventListener('click', () => {
+                memeGame.style.display = 'none';
+                numberGame.style.display = 'flex';
+                numberGame.classList.add('fade-in');
+            });
+            
+            // Модальное окно
+            closeModal.addEventListener('click', () => {
+                memeModal.style.display = 'none';
+            });
+            
+            // Закрытие модального окна при клике вне изображения
+            memeModal.addEventListener('click', (e) => {
+                if (e.target === memeModal) {
+                    memeModal.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleMemeSelection(memeItem) {
+            const index = parseInt(memeItem.dataset.index);
+            
+            if (memeItem.classList.contains('selected')) {
+                memeItem.classList.remove('selected');
+                selectedMemes = selectedMemes.filter(i => i !== index);
+            } else {
+                memeItem.classList.add('selected');
+                selectedMemes.push(index);
+            }
+            
+            // Активируем кнопку продолжения, если выбрана хотя бы одна фотка
+            continueMemeBtn.disabled = selectedMemes.length === 0;
+        }
+
+        function openMemeModal(meme) {
+            // Исправленный путь к фото
+            modalMemeImg.src = `${meme}`;
+            memeModal.style.display = 'flex';
+        }
+
+        // Игра с числами
+        function initNumberGame() {
+            guessBtn.addEventListener('click', handleGuess);
+            
+            // Также разрешаем отправку по нажатию Enter
+            numberInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleGuess();
+                }
+            });
+        }
+
+        function handleGuess() {
+            const guess = parseInt(numberInput.value);
+            
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                numberMessage.textContent = 'Введи число от 1 до 100';
+                return;
+            }
+            
+            // В этой игре всегда побеждаем
+            numberMessage.textContent = `ВАУ! На таро гадала, да?`;
+            numberMessage.style.color = '#4CAF50';
+            
+            // Переход к финальному экрану
+            setTimeout(() => {
+                numberGame.style.display = 'none';
+                finalScreen.style.display = 'flex';
+                finalScreen.classList.add('fade-in');
+                
+                // Загружаем тексты песен (в реальном проекте будут загружаться из файлов)
+                loadLyrics();
+            }, 1500);
+        }
+
+        // Загрузка текстов песен
+        function loadLyrics() {
+            // Загружаем тексты песен из файлов
+            fetch('russian_lyrics.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Файл не найден');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    russianLyrics.innerHTML = `<pre>${text}</pre>`;
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки русского текста:', error);
+                    russianLyrics.innerHTML = '<p>Сорян, неполадочки вышли. Я лошара)</p>';
+                });
+
+            fetch('english_lyrics.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Файл не найден');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    englishLyrics.innerHTML = `<pre>${text}</pre>`;
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки английского текста:', error);
+                    englishLyrics.innerHTML = '<p>Сорян, неполадочки вышли. Я лошара)</p>';
+                });
+        }
+
+        // Запуск игры с ячейками
+        function startCellGame() {
+            welcomeScreen.style.display = 'none';
+            cellGame.style.display = 'flex';
+            cellGame.classList.add('fade-in');
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
